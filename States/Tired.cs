@@ -1,21 +1,23 @@
 ﻿using StateMachineDemo.Interfaces;
 using StateMachineDemo.Models;
+using StateMachineDemo.Services;
 using System;
 
 namespace StateMachineDemo.States
 {
     public class Tired : BaseState<Tired>
     {
-        public Tired(IProcessContext context) : base(context)
+        private readonly ILogger logger;
+
+        public Tired(IProcessContext context, ILogger logger) : base(context, logger)
         {
-            context.SetCurrentState<Tired>();
+            this.logger = logger;
         }
 
         public override StateResult DoAction()
         {
             if (context.HourOfDay >= 22)
             {
-                Console.WriteLine($"Bed time!");
                 return ReturnState<Sleeping>();
             }
 

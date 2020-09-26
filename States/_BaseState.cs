@@ -1,5 +1,6 @@
 ﻿using StateMachineDemo.Interfaces;
 using StateMachineDemo.Models;
+using StateMachineDemo.Services;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -10,10 +11,12 @@ namespace StateMachineDemo.States
     {
         protected IProcessContext context;
 
-        public BaseState(IProcessContext context)
+        public BaseState(IProcessContext context, ILogger logger)
         {
             this.context = context;
-            context.SetCurrentState<T>();
+            context.CurrentStateName = typeof(T).FullName;
+
+            logger.Log($"In state {context.CurrentStateName}");
         }
 
         protected BaseState() {}

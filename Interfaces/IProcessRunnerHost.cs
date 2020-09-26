@@ -2,6 +2,6 @@
 {
     public interface IProcessRunnerHost
     {
-        void Start();
+        void StartProcess();
     }
 }
