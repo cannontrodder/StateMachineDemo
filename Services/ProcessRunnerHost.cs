@@ -3,26 +3,22 @@ using StateMachineDemo.Models;
 using StateMachineDemo.States;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace StateMachineDemo.Services
 {
     public class ProcessRunnerHost : IProcessRunnerHost
     {
         private readonly IServiceProvider serviceProvider;
-        private IState currentState;
+        private readonly ILogger logger;
         private IProcessContext context;
 
-        public ProcessRunnerHost(IServiceProvider serviceProvider, IProcessContext context)
+        public ProcessRunnerHost(IServiceProvider serviceProvider, IProcessContext context, ILogger logger)
         {
             this.serviceProvider = serviceProvider;
             this.context = context;
-
-            currentState = GetNewState<Start>();
-        }
-
-        private T GetNewState<T>()
-        {
-            return ActivatorUtilities.CreateInstance<T>(serviceProvider, context);
+            this.logger = logger;
         }
 
         private IState GetNewState(Type instanceType)
@@ -30,25 +26,42 @@ namespace StateMachineDemo.Services
             return (IState)ActivatorUtilities.CreateInstance(serviceProvider, instanceType, context);
         }
 
-        public void Start()
+        public void StartProcess()
+        {
+            StateResult result = ContinuePreviousStateWhereContextDefinesIt();
+
+            result = RunWorkflow(result);
+
+            if (result.ActionRequired == ActionRequiredEnum.Retry)
+            {
+                logger.Log(JsonSerializer.Serialize(context));
+            }
+        }
+
+        private StateResult RunWorkflow(StateResult result)
+        {
+            while (result.ActionRequired == ActionRequiredEnum.TransitionToNewState)
+            {
+                var currentState = GetNewState(result.GetNextState());
+                result = currentState.DoAction();
+            }
+
+            return result;
+        }
+
+        private StateResult ContinuePreviousStateWhereContextDefinesIt()
         {
             StateResult result;
 
-            do
-            {
-                result = currentState.DoAction();
+            if (!StateResult.TryCreateMoveToThisState(context.CurrentStateName, out result))
+                result = GetDefaultStart();
 
-                if (result.ActionRequired == ActionRequiredEnum.TransitionToNewState)
-                    currentState = GetNewState(result.GetNextState());
+            return result;
+        }
 
-            } while (result.ActionRequired == ActionRequiredEnum.TransitionToNewState);
-
-            if(result.ActionRequired == ActionRequiredEnum.Retry)
-            {
-                Console.WriteLine($"Looks like we need to retry this later: {currentState.GetType().Name}");
-            }
-
-            // otherwise we just do nothing
+        private static StateResult GetDefaultStart()
+        {
+            return StateResult.MoveToThisState<Start>();
         }
     }
 }

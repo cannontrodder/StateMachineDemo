@@ -14,18 +14,26 @@ namespace StateMachineDemo
 
         static void Main(string[] args)
         {
+            //var context = new ProcessContext
+            //{
+            //    Name = "Neil",
+            //    Age = 44,
+            //    HourOfDay = 0
+            //};
+
             var context = new ProcessContext
             {
                 Name = "Neil",
                 Age = 44,
-                HourOfDay = 7
+                HourOfDay = 19,
+                CurrentStateName = "StateMachineDemo.States.Awake"
             };
 
             RegisterServices(context);
 
             serviceProvider
                 .GetRequiredService<IProcessRunnerHost>()
-                .Start();
+                .StartProcess();
 
             DisposeServices();
         }

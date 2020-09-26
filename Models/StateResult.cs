@@ -11,16 +11,31 @@ namespace StateMachineDemo.Models
         public ActionRequiredEnum ActionRequired { get; set; }
         private Type nextState;
 
-        private StateResult()
-        {
+        private StateResult() { }
 
+        public static bool TryCreateMoveToThisState(string stateName, out StateResult stateResult)
+        {
+            Type? stateType = null;
+            stateResult = null;
+
+            try
+            {
+                stateType = Type.GetType(stateName);
+            }
+            catch (Exception) { }
+
+            if (stateType == null)
+                return false;
+
+            stateResult = new StateResult();
+            stateResult.ActionRequired = ActionRequiredEnum.TransitionToNewState;
+            stateResult.nextState = stateType;
+            return true;
         }
 
-        public static StateResult MoveToThisState<T>()
+        public static StateResult MoveToThisState<T>() where T : IState
         {
             var result = new StateResult();
-
-            result.ActionRequired = ActionRequiredEnum.TransitionToNewState;
             result.SetNextState<T>();
             return result;
         }
@@ -46,8 +61,9 @@ namespace StateMachineDemo.Models
             return nextState;
         }
 
-        private void SetNextState<T>()
+        private void SetNextState<T>() where T : IState
         {
+            ActionRequired = ActionRequiredEnum.TransitionToNewState;
             nextState = typeof(T);
         }
     }

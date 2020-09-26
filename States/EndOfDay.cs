@@ -1,16 +1,16 @@
 ﻿using StateMachineDemo.Interfaces;
 using StateMachineDemo.Models;
+using StateMachineDemo.Services;
 using System;
 
 namespace StateMachineDemo.States
 {
-    public class EndOfDay : BaseState
+    public class EndOfDay : BaseState<EndOfDay>
     {
-        public EndOfDay(IProcessContext context) : base(context) { }
+        public EndOfDay(IProcessContext context, ILogger logger) : base(context, logger) { }
 
         public override StateResult DoAction()
         {
-            Console.WriteLine("Time to exit");
             return ReturnState<Exit>();
         }
     }

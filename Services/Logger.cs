@@ -11,7 +11,7 @@ namespace StateMachineDemo.Services
     {
         public void Log(string message)
         {
-            Console.WriteLine(message);
+            Console.WriteLine($"LOG: {message}");
         }
     }
 }

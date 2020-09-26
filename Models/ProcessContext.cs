@@ -1,4 +1,5 @@
 ﻿using StateMachineDemo.Interfaces;
+using System;
 
 namespace StateMachineDemo.Models
 {
@@ -8,5 +9,6 @@ namespace StateMachineDemo.Models
         public int Age { get; set; }
         public string Name { get; set; }
         public int HourOfDay { get; set; }
+        public string CurrentStateName { get; set; }
     }
 }
