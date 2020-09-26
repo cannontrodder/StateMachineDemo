@@ -16,7 +16,9 @@ namespace StateMachineDemo.Models
 
         }
 
-        public static StateResult MoveToThisState<T>()
+        // implement constructor which takes a string and sets up the next result from that
+
+        public static StateResult MoveToThisState<T>() where T : IState
         {
             var result = new StateResult();
 

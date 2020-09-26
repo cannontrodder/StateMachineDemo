@@ -4,9 +4,12 @@ using System;
 
 namespace StateMachineDemo.States
 {
-    public class EndOfDay : BaseState
+    public class EndOfDay : BaseState<EndOfDay>
     {
-        public EndOfDay(IProcessContext context) : base(context) { }
+        public EndOfDay(IProcessContext context) : base(context)
+        {
+            context.SetCurrentState<EndOfDay>();
+        }
 
         public override StateResult DoAction()
         {

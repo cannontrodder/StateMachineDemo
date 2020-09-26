@@ -4,13 +4,15 @@ using System;
 
 namespace StateMachineDemo.States
 {
-    public class Tired : BaseState
+    public class Tired : BaseState<Tired>
     {
-        public Tired(IProcessContext context) : base(context) { }
+        public Tired(IProcessContext context) : base(context)
+        {
+            context.SetCurrentState<Tired>();
+        }
 
         public override StateResult DoAction()
         {
-
             if (context.HourOfDay >= 22)
             {
                 Console.WriteLine($"Bed time!");

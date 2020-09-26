@@ -9,17 +9,15 @@ namespace StateMachineDemo.Services
     public class ProcessRunnerHost : IProcessRunnerHost
     {
         private readonly IServiceProvider serviceProvider;
-        private IState currentState;
         private IProcessContext context;
 
         public ProcessRunnerHost(IServiceProvider serviceProvider, IProcessContext context)
         {
             this.serviceProvider = serviceProvider;
             this.context = context;
-
-            currentState = GetNewState<Start>();
         }
 
+        // do I need this now?
         private T GetNewState<T>()
         {
             return ActivatorUtilities.CreateInstance<T>(serviceProvider, context);
@@ -32,23 +30,22 @@ namespace StateMachineDemo.Services
 
         public void Start()
         {
-            StateResult result;
+            // we should be able to do MoveToThisState with a type hydrated at run time from the context
+            // the context will have it as a string so we will need to validate it is the right type
+            // rest of the time, use the generic for type safety
 
-            do
+            var result = StateResult.MoveToThisState<Start>();
+
+            while (result.ActionRequired == ActionRequiredEnum.TransitionToNewState)
             {
+                var currentState = GetNewState(result.GetNextState());
                 result = currentState.DoAction();
-
-                if (result.ActionRequired == ActionRequiredEnum.TransitionToNewState)
-                    currentState = GetNewState(result.GetNextState());
-
-            } while (result.ActionRequired == ActionRequiredEnum.TransitionToNewState);
+            } 
 
             if(result.ActionRequired == ActionRequiredEnum.Retry)
             {
-                Console.WriteLine($"Looks like we need to retry this later: {currentState.GetType().Name}");
+                Console.WriteLine($"Looks like we need to retry this later: {context.GetCurrentStateName()}");
             }
-
-            // otherwise we just do nothing
         }
     }
 }

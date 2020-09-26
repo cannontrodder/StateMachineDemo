@@ -4,7 +4,7 @@ using System;
 
 namespace StateMachineDemo.States
 {
-    public class Exit : BaseState
+    public class Exit : BaseState<Exit>
     {
         public Exit(IProcessContext context) : base(context) { }
 

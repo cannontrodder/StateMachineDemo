@@ -6,22 +6,23 @@ using System.Threading;
 
 namespace StateMachineDemo.States
 {
-    public abstract class BaseState : IState
+    public abstract class BaseState<T> : IState
     {
         protected IProcessContext context;
 
         public BaseState(IProcessContext context)
         {
             this.context = context;
+            context.SetCurrentState<T>();
         }
 
         protected BaseState() {}
 
         public abstract StateResult DoAction();
 
-        protected StateResult ReturnState<T>() where T : IState
+        protected StateResult ReturnState<R>() where R : IState
         {
-            return StateResult.MoveToThisState<T>();
+            return StateResult.MoveToThisState<R>();
         }
 
         protected void NextHour()

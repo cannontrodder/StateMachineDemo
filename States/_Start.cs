@@ -4,7 +4,7 @@ using System;
 
 namespace StateMachineDemo.States
 {
-    public class Start : BaseState
+    public class Start : BaseState<Start>
     {
         public Start(IProcessContext context) : base(context) { }
 

@@ -4,10 +4,13 @@ using System;
 
 namespace StateMachineDemo.States
 {
-    public class Sleeping : BaseState
-    {
-        public Sleeping(IProcessContext context) : base(context) { }
 
+    public class Sleeping : BaseState<Sleeping>
+    {
+        public Sleeping(IProcessContext context) : base(context)
+        {
+            context.SetCurrentState<Sleeping>();
+        }
         public override StateResult DoAction()
         {
             if (context.HourOfDay >= 24)
