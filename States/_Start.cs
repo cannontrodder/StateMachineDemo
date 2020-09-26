@@ -1,4 +1,5 @@
 ﻿using StateMachineDemo.Interfaces;
+using StateMachineDemo.Models;
 using System;
 
 namespace StateMachineDemo.States
@@ -7,7 +8,7 @@ namespace StateMachineDemo.States
     {
         public Start(IProcessContext context) : base(context) { }
 
-        public override Type DoAction()
+        public override StateResult DoAction()
         {
             return ReturnState<Sleeping>();
         }

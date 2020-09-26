@@ -1,4 +1,5 @@
 ﻿using StateMachineDemo.Interfaces;
+using StateMachineDemo.Models;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -16,13 +17,11 @@ namespace StateMachineDemo.States
 
         protected BaseState() {}
 
-        public abstract Type DoAction();
+        public abstract StateResult DoAction();
 
-        public virtual bool ShouldExit() => false;
-
-        protected Type ReturnState<T>() where T : IState
+        protected StateResult ReturnState<T>() where T : IState
         {
-            return typeof(T);
+            return StateResult.MoveToThisState<T>();
         }
 
         protected void NextHour()

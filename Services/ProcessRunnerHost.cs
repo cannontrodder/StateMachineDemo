@@ -32,11 +32,23 @@ namespace StateMachineDemo.Services
 
         public void Start()
         {
-            while (!currentState.ShouldExit())
+            StateResult result;
+
+            do
             {
-                var nextType = currentState.DoAction();
-                currentState = GetNewState(nextType);
+                result = currentState.DoAction();
+
+                if (result.ActionRequired == ActionRequiredEnum.TransitionToNewState)
+                    currentState = GetNewState(result.GetNextState());
+
+            } while (result.ActionRequired == ActionRequiredEnum.TransitionToNewState);
+
+            if(result.ActionRequired == ActionRequiredEnum.Retry)
+            {
+                Console.WriteLine($"Looks like we need to retry this later: {currentState.GetType().Name}");
             }
+
+            // otherwise we just do nothing
         }
     }
 }
