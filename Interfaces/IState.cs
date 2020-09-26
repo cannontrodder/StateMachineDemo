@@ -1,11 +1,11 @@
 ﻿using StateMachineDemo.Interfaces;
+using StateMachineDemo.Models;
 using System;
 
 namespace StateMachineDemo
 {
     public interface IState
     {
-        Type DoAction();
-        bool ShouldExit();
+        StateResult DoAction();
     }
 }

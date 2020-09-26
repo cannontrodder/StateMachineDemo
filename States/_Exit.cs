@@ -1,4 +1,5 @@
 ﻿using StateMachineDemo.Interfaces;
+using StateMachineDemo.Models;
 using System;
 
 namespace StateMachineDemo.States
@@ -7,16 +8,10 @@ namespace StateMachineDemo.States
     {
         public Exit(IProcessContext context) : base(context) { }
 
-        public override Type DoAction()
-        {
-            throw new NotImplementedException("Should never call DoAction on the end state");
-        }
-
-        public override bool ShouldExit()
+        public override StateResult DoAction()
         {
             Console.WriteLine("We are exiting");
-
-            return true;
+            return StateResult.End();
         }
     }
 }

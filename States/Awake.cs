@@ -1,5 +1,7 @@
 ﻿using StateMachineDemo.Interfaces;
+using StateMachineDemo.Models;
 using System;
+using System.Reflection.Metadata.Ecma335;
 
 namespace StateMachineDemo.States
 {
@@ -7,7 +9,7 @@ namespace StateMachineDemo.States
     {
         public Awake(IProcessContext context) : base(context) { }
 
-        public override Type DoAction()
+        public override StateResult DoAction()
         {
             if (context.HourOfDay >= 20)
             {
@@ -17,6 +19,12 @@ namespace StateMachineDemo.States
 
             NextHour();
             
+            if(context.HourOfDay == 19)
+            {
+                Console.WriteLine($"HANG ON!!! WE COULDN'T TELL WHAT TIME IT IS!!!");
+                return StateResult.Retry();
+            }
+
             return ReturnState<Awake>();
         }
     }
