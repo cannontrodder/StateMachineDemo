@@ -32,9 +32,19 @@ namespace StateMachineDemo.Services
 
             result = RunWorkflow(result);
 
-            if (result.ActionRequired == ActionRequiredEnum.Retry)
+            switch (result.ActionRequired)
             {
-                logger.Log(JsonSerializer.Serialize(context));
+                case ActionRequiredEnum.EndSuccess:
+                    logger.Log("End of process, we're done.");
+                    break;
+                case ActionRequiredEnum.EndFailure:
+                    logger.Log("End of process, we're done but this failed (and cannot continue).");
+                    break;
+                case ActionRequiredEnum.Retry:
+                    logger.Log(JsonSerializer.Serialize(context));
+                    break;
+                default:
+                    break;
             }
         }
 

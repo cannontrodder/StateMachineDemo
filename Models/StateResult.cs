@@ -4,7 +4,7 @@ using System.Text;
 
 namespace StateMachineDemo.Models
 {
-    public enum ActionRequiredEnum { TransitionToNewState, End, Retry }
+    public enum ActionRequiredEnum { TransitionToNewState, EndSuccess, EndFailure, Retry }
 
     public class StateResult
     {
@@ -44,7 +44,7 @@ namespace StateMachineDemo.Models
         {
             var result = new StateResult();
 
-            result.ActionRequired = ActionRequiredEnum.End;
+            result.ActionRequired = ActionRequiredEnum.EndSuccess;
             return result;
         }
 
